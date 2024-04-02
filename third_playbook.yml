@@ -1,0 +1,36 @@
+---
+- name: unarchiving the file
+  hosts: web
+  tasks:
+    - name: install tar package
+      yum:
+        name: tar
+        state: latest  
+        
+
+    - name: Retriving website from repository
+      get_url: 
+        url: https://github.com/datasets
+        dest: /tmp/website.tzg
+        owner: vagrant
+        group: vagrant      
+        mode: 777
+        
+    - name: creating directory html
+      file:
+        path: /tmp/html
+        state: directory
+
+    # - name: Extract gzip-compressed archive
+    #   command: gunzip -c /tmp/website.tzg | tar xvf - -C /tmp/html
+
+    - name: unzipping the file
+      unarchive:
+        src: /tmp/website.tzg
+        dest: /tmp/html
+        remote_src: yes
+        
+    - name: debug message
+      debug:
+        msg: "content in website.tzg that was downloaded from url is unarchived and pushed in to the created file."
+      
